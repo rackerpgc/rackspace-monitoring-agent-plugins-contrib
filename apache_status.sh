@@ -1,7 +1,7 @@
 #!/bin/bash
 
 ## Rackspace Cloud Monitoring Plug-In
-## MySQL Replication State Validation
+## Apache server-status details
 #
 # (C)2013 Philip Gates-Crandall <philip.gates-crandal@rackspace.com>
 # All Rights Reserved.
