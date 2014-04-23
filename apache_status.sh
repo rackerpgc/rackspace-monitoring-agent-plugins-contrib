@@ -25,11 +25,11 @@
 USER=$1
 PASSWORD=$2
 
-if [[ -z $USER && -z $PASSWORD ]]
+if ! [[ -z $USER && -z $PASSWORD ]]
 then
-  STATUS=$(curl -s http://localhost/server-status?auto)
+  echo 'STATUS=$(curl -u ${1}:${2} -s http://localhost/server-status?auto)'
 else
-  STATUS=$(curl -u ${1}:${2} -s http://localhost/server-status?auto)
+  echo 'STATUS=$(curl -s http://localhost/server-status?auto)'
 fi
 IFS=$'\n'
 
