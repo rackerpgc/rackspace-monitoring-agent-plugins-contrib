@@ -22,7 +22,15 @@
 # Place plug-in in /usr/lib/rackspace-monitoring-agent/plugins
 #
 
-STATUS=$(curl -s http://localhost/server-status?auto)
+USER=$1
+PASSWORD=$2
+
+if [[ -z $USER && -z $PASSWORD ]]
+then
+  STATUS=$(curl -s http://localhost/server-status?auto)
+else
+  STATUS=$(curl -u ${1}:${2} -s http://localhost/server-status?auto)
+fi
 IFS=$'\n'
 
 echo 'status OK'
