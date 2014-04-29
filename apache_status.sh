@@ -20,50 +20,35 @@
 #
 # Usage:
 # Place plug-in in /usr/lib/rackspace-monitoring-agent/plugins
-#
+# 
 
 show_help() {
 cat << EOF
-USAGE: $0 [-h] [-u username:password] [-l location] [-p port] [-m timeout]
+USAGE: $0 [curl options]
 
-  -h print this help summary
-  -u username:password - HTTP Authentication for curl (default none)
-  -l location - the location of the Apache server-status module (default "/server-status?auto")
-  -p port - the port that Apache is listening on (default 80)
-  -m timeout - the length of time to try the request (default 30 seconds)
+Default: curl -s -m 30 http://localhost/server-status?auto
+
+Curl options will be passed to the curl command and take the place of the default options above.
+
 EOF
 }
 
-location="/server-status?auto"
-port="80"
-host="localhost"
-timeout="30 seconds"
+CURL_OPTS=$@
 
-while getopts "u:l:p:m:h?" o; do
-    case "${o}" in
-        h)  show_help
-            exit 0
-            ;;
-        u) user=${OPTARG}
-           CURL_OPTS=${CURL_OPTS}" -u ${user}"
-            ;;
-        l) location=${OPTARG}
-            ;;
-        p) port=${OPTARG}
-           CURL_HOST="${hostname}:${port}${location}"
-            ;;
-        m) timeout=${OPTARG}
-           CURL_OPTS=${CURL_OPTS}" -m ${timeout}"
-            ;;
-        '?') show_help
-             exit 0
-            ;;
-    esac
-done
+if [[ $1 == "-h" ]] || [[ $1 == "--help" ]] || [[ $1 == "?" ]] || [[ $1 == "-?" ]] || [[ $1 == "help" ]]
+then
+  show_help
+  exit 0;
+fi
 
-CURL_TARGET="http://${host}:${port}${location}"
+if [[ -z ${CURL_OPTS} ]]
+then
+  CURL_TARGET="curl -s -m 30 http://localhost/server-status?auto"
+else
+  CURL_TARGET="curl ${CURL_OPTS}"
+fi
 
-STATUS=$(curl -s${CURL_OPTS} ${CURL_TARGET})
+STATUS=$(${CURL_TARGET})
 
 if [[ -z $STATUS ]]
 then
